@@ -1,0 +1,116 @@
+0            * * *   read_cv         ; Initial state, jumping to tape reading
+
+read_cv      A _ r   read_cv_A       ; Reading tape and placing zeroes between symbols
+read_cv      B _ r   read_cv_B
+read_cv      C _ r   read_cv_C
+read_cv      D _ r   read_cv_D
+read_cv      E _ r   read_cv_E
+read_cv      F _ r   read_cv_F
+read_cv      _ * r   read_cv_end     ; Finished reading tape, jumping to main cycle
+
+read_cv_A    * * r   *
+read_cv_A    _ * r   read_cv_As
+read_cv_As   * * r   *
+read_cv_As   _ A r   read_cv_An
+read_cv_An   * 0 l   read_cv_l
+
+read_cv_B    * * r   *
+read_cv_B    _ * r   read_cv_Bs
+read_cv_Bs   * * r   *
+read_cv_Bs   _ B r   read_cv_Bn
+read_cv_Bn   * 0 l   read_cv_l
+
+read_cv_C    * * r   *
+read_cv_C    _ * r   read_cv_Cs
+read_cv_Cs   * * r   *
+read_cv_Cs   _ C r   read_cv_Cn
+read_cv_Cn   * 0 l   read_cv_l
+
+read_cv_D    * * r   *
+read_cv_D    _ * r   read_cv_Ds
+read_cv_Ds   * * r   *
+read_cv_Ds   _ D r   read_cv_Dn
+read_cv_Dn   * 0 l   read_cv_l
+
+read_cv_E    * * r   *
+read_cv_E    _ * r   read_cv_Es
+read_cv_Es   * * r   *
+read_cv_Es   _ E r   read_cv_En
+read_cv_En   * 0 l   read_cv_l
+
+read_cv_F    * * r   *
+read_cv_F    _ * r   read_cv_Fs
+read_cv_Fs   * * r   *
+read_cv_Fs   _ F r   read_cv_Fn
+read_cv_Fn   * 0 l   read_cv_l
+
+read_cv_l    * * l   *
+read_cv_l    _ * l   read_cv_ls
+read_cv_ls   * * l   *
+read_cv_ls   _ * r   read_cv
+
+read_cv_end  * * r   *
+read_cv_end  _ * *   main_init
+
+main_init    * # l   print_pl        ; Main cycle, jumping to printing
+
+print_pl     1 * l   print_pp        ; Printing, writing symbol
+
+print_pp     A _ r   print_ppA
+print_pp     B _ r   print_ppB
+print_pp     C _ r   print_ppC
+print_pp     D _ r   print_ppD
+print_pp     E _ r   print_ppE
+print_pp     F _ r   print_ppF
+
+print_ppA    * * r   *
+print_ppA    _ A l   print_pplA
+print_pplA   * * l   *
+print_pplA   _ A l   print_pl
+
+print_ppB    * * r   *
+print_ppB    _ B l   print_pplB
+print_pplB   * * l   *
+print_pplB   _ B l   print_pl
+
+print_ppC    * * r   *
+print_ppC    _ C l   print_pplC
+print_pplC   * * l   *
+print_pplC   _ C l   print_pl
+
+print_ppD    * * r   *
+print_ppD    _ D l   print_pplD
+print_pplD   * * l   *
+print_pplD   _ D l   print_pl
+
+print_ppE    * * r   *
+print_ppE    _ E l   print_pplE
+print_pplE   * * l   *
+print_pplE   _ E l   print_pl
+
+print_ppF    * * r   *
+print_ppF    _ F l   print_pplF
+print_pplF   * * l   *
+print_pplF   _ F l   print_pl
+
+print_pl     0 * l   print_plls      ; Printing, skipping symbol
+print_plls   * * l   print_pl
+
+print_pl     _ * r   print_r         ; Finished printing, placing separator
+print_r      * * r   *
+print_r      _ , l   print_rl
+print_rl     * * l   *
+print_rl     # * l   inc             ; Separator placed, jumping to increasing
+
+inc          1 0 l   inc_1s          ; Increasing binary number
+inc_1s       * * l   inc
+
+inc          0 1 *   print_pl        ; Increased, jumping to printing
+
+inc          _ * *   clr             ; Finished generating, jumping to clearing
+
+clr          * _ r   clr
+clr          # * r   clr_r
+clr_r        * * r   clr_r
+clr_r        _ * l   clr_rc
+clr_rc       * # *   halt            ; Finished, halting
